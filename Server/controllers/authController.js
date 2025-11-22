@@ -17,9 +17,9 @@ function validatePassword(pw) {
 
 export const register = async (req, res, next) => {
   try {
-    const { email, password, role } = req.body;
-    if (!email || !password || !role) {
-      return res.status(400).json({ message: 'email, password and role are required' });
+    const { name, email, password, role } = req.body;
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: 'name, email, password and role are required' });
     }
 
     if (!validatePassword(password)) {
@@ -33,7 +33,7 @@ export const register = async (req, res, next) => {
 
     const saltRounds = 10;
     const hashed = await bcrypt.hash(password, saltRounds);
-    const user = await User.create({ email, password: hashed, role });
+    const user = await User.create({ name, email, password: hashed, role });
 
     // create verification code on user and set pending cookie (10 minutes)
     const code = generateCode()
@@ -75,7 +75,7 @@ export const login = async (req, res, next) => {
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const cookieValue = JSON.stringify({ id: user._id, email: user.email, role: user.role });
+    const cookieValue = JSON.stringify({ id: user._id, email: user.email, role: user.role, name: user.name });
     res.cookie('user', cookieValue, {
       httpOnly: true,
       signed: true,
@@ -83,7 +83,7 @@ export const login = async (req, res, next) => {
       sameSite: 'lax',
     });
 
-    return res.status(200).json({ message: 'Logged in', user: { id: user._id, email: user.email, role: user.role } });
+    return res.status(200).json({ message: 'Logged in', user: { id: user._id, email: user.email, role: user.role, name: user.name } });
   } catch (err) {
     next(err);
   }

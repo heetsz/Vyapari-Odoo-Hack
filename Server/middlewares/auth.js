@@ -21,12 +21,12 @@ export const requireAuth = async (req, res, next) => {
     const trustCookie = process.env.AUTH_TRUST_COOKIE === 'true' || process.env.AUTH_TRUST_COOKIE === '1';
     if (trustCookie) {
       // attach minimal user shape similar to what controllers expect
-      req.user = { _id: parsed.id, email: parsed.email, role: parsed.role };
+      req.user = { _id: parsed.id, email: parsed.email, role: parsed.role, name: parsed.name };
       return next();
     }
 
     // Default: fetch fresh user from DB but use lean() and project only needed fields for speed
-    const user = await User.findById(parsed.id).select('_id email role').lean();
+    const user = await User.findById(parsed.id).select('_id email role name').lean();
     if (!user) return res.status(401).json({ message: 'User not found' });
 
     req.user = user;

@@ -13,6 +13,7 @@ import {
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
+import axios from 'axios'
 import {
   Sidebar,
   SidebarContent,
@@ -24,11 +25,6 @@ import {
 } from "@/components/ui/sidebar"
 
 const data = {
-  user: {
-    name: "Admin User",
-    email: "admin@invio.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "Dashboard",
@@ -77,6 +73,22 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+  const [user, setUser] = React.useState(null)
+
+  React.useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const base_url = import.meta.env.VITE_API_BASE || import.meta.env.VITE_BACKEND_URL || '/api'
+        const res = await axios.get(`${base_url}/me`, { withCredentials: true })
+        if (mounted && res?.data?.user) setUser(res.data.user)
+      } catch (err) {
+        // ignore - user remains null
+      }
+    })()
+    return () => { mounted = false }
+  }, [])
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -95,8 +107,8 @@ export function AppSidebar({
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }

@@ -20,10 +20,10 @@ function validatePassword(pw) {
 
 const Register = () => {
   const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
   const [password, setPassword] = useState('')
-  const [rePassword, setRePassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [showRePassword, setShowRePassword] = useState(false)
+  
   const [role, setRole] = useState('Inventory Managers')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -34,12 +34,13 @@ const Register = () => {
     setError('')
 
     if (!email) return setError('Email is required')
+    if (!name) return setError('Name is required')
     if (!validatePassword(password)) return setError('Password is required')
-    if (password !== rePassword) return setError('Passwords do not match')
+    
 
     setLoading(true)
     try {
-      const res = await axios.post('/register', { email, password, role }, { withCredentials: true })
+      const res = await axios.post('/register', { name, email, password, role }, { withCredentials: true })
       if (res.status !== 201) {
         setError(res.data?.message || 'Registration failed')
         setLoading(false)
@@ -61,6 +62,11 @@ const Register = () => {
       <h2 className="text-2xl mb-4">Register</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
+          <label className="block text-sm mb-1">Name</label>
+          <Input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+        </div>
+
+        <div>
           <label className="block text-sm mb-1">Email</label>
           <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
@@ -76,21 +82,6 @@ const Register = () => {
               onClick={() => setShowPassword((s) => !s)}
             >
               {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Re-enter Password</label>
-          <div className="relative">
-            <Input type={showRePassword ? 'text' : 'password'} value={rePassword} onChange={(e) => setRePassword(e.target.value)} required />
-            <button
-              type="button"
-              aria-label={showRePassword ? 'Hide password' : 'Show password'}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-              onClick={() => setShowRePassword((s) => !s)}
-            >
-              {showRePassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>
           </div>
         </div>

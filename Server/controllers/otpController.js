@@ -100,8 +100,8 @@ export const verifyOtp = async (req, res, next) => {
         user.verificationExpiresAt = undefined
         await user.save()
 
-        // clear pending cookie and set authenticated cookie
-        const cookieValue = JSON.stringify({ id: user._id, email: user.email, role: user.role })
+        // clear pending cookie and set authenticated cookie (include name)
+        const cookieValue = JSON.stringify({ id: user._id, email: user.email, role: user.role, name: user.name })
         res.clearCookie('pending')
         res.cookie('user', cookieValue, { httpOnly: true, signed: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax' })
 

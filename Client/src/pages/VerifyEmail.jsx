@@ -32,7 +32,7 @@ const VerifyEmail = () => {
     try {
       await axios.post('/otp/verify', { code, type: 'verify' }, { withCredentials: true })
       // verified — navigate to dashboard
-      navigate('/dashboard')
+      window.location.reload()
     } catch (err) {
       setError(err?.response?.data?.message || 'Network error')
     } finally {
