@@ -2,14 +2,22 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import { connectDB } from './helpers/db.js';
+import cors from "cors";
+import productRoutes from "./routes/products.js";
+import categoryRoutes from "./routes/categories.js";
+
+const app = express();
+app.use(cors());
 
 dotenv.config();
 
-const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 connectDB().catch((err) => {
   console.error('Initial DB connection error:', err.message);
