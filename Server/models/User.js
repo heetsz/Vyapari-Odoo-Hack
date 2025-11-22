@@ -10,7 +10,8 @@ const UserSchema = new Schema(
 
     role: {
       type: String,
-      enum: ["Admin", "Manager", "Staff", "Inventory Manager"],
+      // Accept both singular canonical roles and the UI-visible labels
+      enum: ["Inventory Manager", "Warehouse Staff"],
       required: true,
       default: "Staff"
     },
