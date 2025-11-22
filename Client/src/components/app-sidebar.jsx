@@ -1,25 +1,17 @@
 import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
   IconSettings,
-  IconUsers,
+  IconPackage,
+  IconTruck,
+  IconFileInvoice,
+  IconAdjustments,
+  IconHistory,
+  IconClipboardList,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -40,111 +32,44 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/",
       icon: IconDashboard,
     },
     
     {
-      title: "Inventory",
-      url: "/inventory",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
+      title: "Operations",
       url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Categories",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Suppliers",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
+      icon: IconClipboardList,
       isActive: true,
-      url: "#",
       items: [
         {
-          title: "Active Proposals",
-          url: "#",
+          title: "Receipt",
+          url: "/operations/receipt",
         },
         {
-          title: "Archived",
-          url: "#",
+          title: "Delivery",
+          url: "/operations/delivery",
+        },
+        {
+          title: "Adjustment",
+          url: "/operations/adjustment",
         },
       ],
     },
     {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Stock",
+      url: "/stock",
+      icon: IconPackage,
     },
     {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Move History",
+      url: "/move-history",
+      icon: IconHistory,
     },
-  ],
-  navSecondary: [
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
       icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "Stock Database",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Inventory Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Purchase Orders",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 }
@@ -157,7 +82,7 @@ export function AppSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
               <a href="#">
                 <IconInnerShadowTop className="size-5!" />
                 <span className="text-base font-semibold">Invio</span>
@@ -168,8 +93,6 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
