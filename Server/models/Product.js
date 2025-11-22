@@ -6,7 +6,7 @@ const ProductSchema = new Schema(
     sku: { type: String, required: true, unique: true },
     categoryId: { type: Schema.Types.ObjectId, ref: "Category" },
     uom: { type: String, required: true },
-    cpu: {type:Number, required:true}
+    cpu: {type:Number, required:true},
     reorderLevel: { type: Number, default: 0 },
     initialStock: { type: Number, default: 0 },
   },
