@@ -62,7 +62,7 @@ const Login = () => {
         </div>
 
         {error && <div className="text-destructive text-sm">{error}</div>}
-
+        
         <div className="flex justify-end">
           <Button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</Button>
         </div>

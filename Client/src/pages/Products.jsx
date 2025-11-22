@@ -1,4 +1,28 @@
 import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableBody,
+} from "@/components/ui/table";
 
 export default function ProductManager() {
   const [products, setProducts] = useState([]);
@@ -11,12 +35,12 @@ export default function ProductManager() {
     uom: "",
     initialStock: 0,
     reorderLevel: 0,
+    cpu:0
   });
 
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
 
-  // Fetch products and categories on load
   useEffect(() => {
     fetchProducts();
     fetchCategories();
@@ -35,13 +59,12 @@ export default function ProductManager() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:5000/api/products", {
+    await fetch("http://localhost:5000/api/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
 
-    await res.json();
     fetchProducts();
 
     setForm({
@@ -65,156 +88,174 @@ export default function ProductManager() {
 
     const newCategory = await res.json();
 
-    setCategories([...categories, newCategory]); // update UI
-    setForm({ ...form, category: newCategory.name }); // auto-select
+    setCategories([...categories, newCategory]);
+    setForm({ ...form, category: newCategory.name });
     setShowNewCategory(false);
     setNewCategoryName("");
   };
 
   return (
-    <div className="p-10 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Product Manager</h1>
+    <div className="p-6 max-w-4xl mx-auto space-y-3">
+      <h1 className="text-4xl font-bold tracking-tight">Product Manager</h1>
 
       {/* PRODUCT FORM */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow p-6 rounded-xl space-y-4"
-      >
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            type="text"
-            placeholder="Product Name"
-            className="border p-2 rounded"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            required
-          />
+      <Card className="shadow-md">
+        <CardHeader>
+          <CardTitle>Add New Product</CardTitle>
+        </CardHeader>
 
-          <input
-            type="text"
-            placeholder="SKU"
-            className="border p-2 rounded"
-            value={form.sku}
-            onChange={(e) => setForm({ ...form, sku: e.target.value })}
-            required
-          />
-
-          {/* CATEGORY DROPDOWN */}
-          {!showNewCategory ? (
-            <div className="flex gap-2">
-              <select
-                className="border p-2 rounded flex-1"
-                value={form.category}
-                onChange={(e) =>
-                  setForm({ ...form, category: e.target.value })
-                }
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                placeholder="Product Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat.name}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-
-              <button
-                type="button"
-                onClick={() => setShowNewCategory(true)}
-                className="bg-blue-500 text-white px-3 rounded"
-              >
-                +
-              </button>
-            </div>
-          ) : (
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="New Category"
-                className="border p-2 rounded flex-1"
-                value={newCategoryName}
-                onChange={(e) => setNewCategoryName(e.target.value)}
               />
 
-              <button
-                type="button"
-                onClick={handleAddCategory}
-                className="bg-green-600 text-white px-3 rounded"
-              >
-                Save
-              </button>
+              <Input
+                placeholder="SKU"
+                value={form.sku}
+                onChange={(e) => setForm({ ...form, sku: e.target.value })}
+                required
+              />
 
-              <button
-                type="button"
-                onClick={() => setShowNewCategory(false)}
-                className="bg-gray-400 text-white px-3 rounded"
-              >
-                X
-              </button>
+              {/* CATEGORY */}
+              {!showNewCategory ? (
+                <div className="flex gap-2">
+                  <Select
+                    value={form.category}
+                    onValueChange={(value) =>
+                      setForm({ ...form, category: value })
+                    }
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat._id} value={cat.name}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Button
+                    type="button"
+                    onClick={() => setShowNewCategory(true)}
+                    variant="default"
+                  >
+                    +
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="New Category"
+                    value={newCategoryName}
+                    className="flex-1"
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                  />
+
+                  <Button onClick={handleAddCategory} variant="default">
+                    Save
+                  </Button>
+
+                  <Button
+                    type="button"
+                    onClick={() => setShowNewCategory(false)}
+                    variant="secondary"
+                  >
+                    X
+                  </Button>
+                </div>
+              )}
+
+              <Input
+                placeholder="Unit of Measure (e.g., pcs, kg)"
+                value={form.uom}
+                onChange={(e) => setForm({ ...form, uom: e.target.value })}
+                required
+              />
+                <text>
+                    Intitial Stock
+                </text>
+              <Input
+                type="number"
+                placeholder="Initial Stock"
+                value={form.initialStock}
+                onChange={(e) =>
+                  setForm({ ...form, initialStock: Number(e.target.value) })
+                }
+              />
+                <text>
+                    ReorderLevel
+                </text>
+              <Input
+                type="number"
+                placeholder="Reorder Level"
+                value={form.reorderLevel}
+                onChange={(e) =>
+                  setForm({ ...form, reorderLevel: Number(e.target.value) })
+                }
+              />
+              <text>
+                Cost per unit
+              </text>
+              <Input
+              type="number"
+              placeholder="Cost per Unit"
+              value = {form.cpu}
+              onChange={(e)=>
+                setForm({...form,cpu:Number(e.target.value)})
+              }/>
             </div>
-          )}
-
-          <input
-            type="text"
-            placeholder="Unit of Measure (e.g., pcs, kg)"
-            className="border p-2 rounded"
-            value={form.uom}
-            onChange={(e) => setForm({ ...form, uom: e.target.value })}
-            required
-          />
-
-          <input
-            type="number"
-            placeholder="Initial Stock"
-            className="border p-2 rounded"
-            value={form.initialStock}
-            onChange={(e) =>
-              setForm({ ...form, initialStock: Number(e.target.value) })
-            }
-          />
-
-          <input
-            type="number"
-            placeholder="Reorder Level"
-            className="border p-2 rounded"
-            value={form.reorderLevel}
-            onChange={(e) =>
-              setForm({ ...form, reorderLevel: Number(e.target.value) })
-            }
-          />
-        </div>
-
-        <button className="bg-green-500 text-white px-4 py-2 rounded w-full">
-          Create Product
-        </button>
-      </form>
+            {/* move action to footer for consistent spacing */}
+            <CardFooter className="p-0">
+              <div className="w-full flex justify-end pt-4">
+                <Button type="submit">Create Product</Button>
+              </div>
+            </CardFooter>
+          </form>
+        </CardContent>
+      </Card>
 
       {/* PRODUCTS TABLE */}
-      <h2 className="text-2xl font-semibold mt-10 mb-4">Products List</h2>
+      <Card className="shadow-md">
+        <CardHeader>
+          <CardTitle>Products List</CardTitle>
+        </CardHeader>
 
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="p-3 border">Name</th>
-            <th className="p-3 border">SKU</th>
-            <th className="p-3 border">Category</th>
-            <th className="p-3 border">UOM</th>
-            <th className="p-3 border">Stock</th>
-          </tr>
-        </thead>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>SKU</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead>UOM</TableHead>
+                <TableHead>Stock</TableHead>
+                <TableHead>Cost per unit</TableHead>
+              </TableRow>
+            </TableHeader>
 
-        <tbody>
-          {products.map((p) => (
-            <tr key={p._id}>
-              <td className="p-3 border">{p.name}</td>
-              <td className="p-3 border">{p.sku}</td>
-              <td className="p-3 border">{p.category}</td>
-              <td className="p-3 border">{p.uom}</td>
-              <td className="p-3 border">{p.initialStock}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            <TableBody>
+              {products.map((p) => (
+                <TableRow key={p._id}>
+                  <TableCell>{p.name}</TableCell>
+                  <TableCell>{p.sku}</TableCell>
+                  <TableCell>{p.category}</TableCell>
+                  <TableCell>{p.uom}</TableCell>
+                  <TableCell>{p.initialStock}</TableCell>
+                  <TableCell>{p.cpu}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
 }
