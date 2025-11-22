@@ -1,9 +1,3 @@
-<<<<<<< Updated upstream
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import Dashboard from '@/pages/dashboard'
-import ProductManager from '@/pages/Products'
-=======
 import React, { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import axios from 'axios'
@@ -31,7 +25,6 @@ const AnimatedRoutes = ({ token }) => {
   )
 }
 
->>>>>>> Stashed changes
 const App = () => {
   const [token, setToken] = useState(null)
   const [authChecked, setAuthChecked] = useState(false)
@@ -58,15 +51,6 @@ const App = () => {
   }, [])
 
   return (
-<<<<<<< Updated upstream
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/products' element={<ProductManager/>}/>
-      </Routes>
-    </Router>
-=======
     <div style={{ minHeight: '100vh' }}>
       {!authChecked ? (
         <div className="flex h-screen items-center justify-center">Checking authentication...</div>
@@ -76,7 +60,6 @@ const App = () => {
         </BrowserRouter>
       )}
     </div>
->>>>>>> Stashed changes
   )
 }
 
