@@ -7,6 +7,9 @@ import Layout from '@/components/Layout'
 // AUTH PAGES
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
+import VerifyEmail from '@/pages/VerifyEmail'
+import ForgotPassword from '@/pages/ForgotPassword'
+import ResetPassword from '@/pages/ResetPassword'
 import Profile from '@/pages/Profile'
 // DASHBOARD + OLD PAGES
 import Dashboard from '@/pages/Dashboard'
@@ -27,6 +30,9 @@ const AnimatedRoutes = ({ token }) => {
       {/* Public pages */}
       <Route path="/login" element={token ? <Navigate to="/dashboard" replace /> : <Login />} />
       <Route path="/register" element={token ? <Navigate to="/dashboard" replace /> : <Register />} />
+      <Route path="/verify-email" element={token ? <Navigate to="/dashboard" replace /> : <VerifyEmail />} />
+      <Route path="/forgot-password" element={token ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} />
+      <Route path="/reset-password" element={token ? <Navigate to="/dashboard" replace /> : <ResetPassword />} />
 
       {/* Protected pages */}
       <Route path="/dashboard" element={token ? <Layout><Dashboard /></Layout> : <Navigate to="/login" replace />} />

@@ -26,6 +26,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import axios from 'axios'
 
 export function NavUser({
   user
@@ -88,7 +89,19 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={async (event) => {
+                // DropdownMenuItem uses onSelect; prevent default navigation behavior
+                event.preventDefault()
+                try {
+                  await axios.post('/logout')
+                } catch (err) {
+                  // ignore errors
+                } finally {
+                  window.location.reload()
+                }
+              }}
+            >
               <IconLogout />
               Log out
             </DropdownMenuItem>

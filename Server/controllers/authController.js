@@ -1,13 +1,18 @@
 import bcrypt from 'bcrypt'
+import sgMail from '@sendgrid/mail'
 import User from '../models/User.js'
 
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY
+if (SENDGRID_API_KEY) sgMail.setApiKey(SENDGRID_API_KEY)
+
+function generateCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString()
+}
+
 function validatePassword(pw) {
+  // Acceptance disabled: accept any non-empty password for now
   if (!pw) return false;
-  if (pw.length < 6 || pw.length > 12) return false;
-  const hasLower = /[a-z]/.test(pw);
-  const hasUpper = /[A-Z]/.test(pw);
-  const hasSpecial = /[^A-Za-z0-9]/.test(pw);
-  return hasLower && hasUpper && hasSpecial;
+  return true;
 }
 
 export const register = async (req, res, next) => {
@@ -30,15 +35,30 @@ export const register = async (req, res, next) => {
     const hashed = await bcrypt.hash(password, saltRounds);
     const user = await User.create({ email, password: hashed, role });
 
-    const cookieValue = JSON.stringify({ id: user._id, email: user.email, role: user.role });
-    res.cookie('user', cookieValue, {
-      httpOnly: true,
-      signed: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'lax',
-    });
+    // create verification code on user and set pending cookie (10 minutes)
+    const code = generateCode()
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000)
+    user.verificationCode = code
+    user.verificationExpiresAt = expiresAt
+    await user.save()
 
-    return res.status(201).json({ message: 'Registered', user: { id: user._id, email: user.email, role: user.role } });
+    // send email if configured
+    if (SENDGRID_API_KEY) {
+      const msg = {
+        to: user.email,
+        from: process.env.SENDGRID_FROM || 'no-reply@example.com',
+        subject: `Your verification code`,
+        text: `Your verification code is ${code}. It expires in 10 minutes.`,
+        html: `<p>Your verification code is <strong>${code}</strong>. It expires in 10 minutes.</p>`,
+      }
+      try { await sgMail.send(msg) } catch (e) { /* ignore send errors here */ }
+    }
+
+    // set pending cookie so verify endpoint can identify user without passing email
+    const pendingValue = JSON.stringify({ id: user._id })
+    res.cookie('pending', pendingValue, { httpOnly: true, signed: true, maxAge: 10 * 60 * 1000, sameSite: 'lax' })
+
+    return res.status(201).json({ message: 'Registered. Verify your email.' })
   } catch (err) {
     next(err);
   }

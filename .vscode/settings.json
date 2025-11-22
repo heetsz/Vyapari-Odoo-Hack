@@ -1,0 +1,14 @@
+{
+  // Ignore unknown at-rules (Tailwind/other PostCSS directives)
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+
+  // Reduce Tailwind IntelliSense aggressive suggestions (best-effort keys)
+  // These keys are optional and will be ignored if your extension version doesn't support them.
+  "tailwindCSS.experimental.suggest": false,
+  "tailwindCSS.experimental.classRegex": [],
+
+  // Optionally disable generic CSS validation if you want zero CSS warnings (uncomment to enable)
+  // "css.validate": false
+}

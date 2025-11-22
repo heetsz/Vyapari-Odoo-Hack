@@ -10,15 +10,12 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 function validatePassword(pw) {
+  // Acceptance disabled: accept any non-empty password for now
   if (!pw) return false
-  if (pw.length < 6 || pw.length > 12) return false
-  const hasLower = /[a-z]/.test(pw)
-  const hasUpper = /[A-Z]/.test(pw)
-  const hasSpecial = /[^A-Za-z0-9]/.test(pw)
-  return hasLower && hasUpper && hasSpecial
+  return true
 }
 
 const Register = () => {
@@ -37,20 +34,20 @@ const Register = () => {
     setError('')
 
     if (!email) return setError('Email is required')
-    if (!validatePassword(password)) return setError('Password must be 6-12 chars and include lower, upper and special char')
+    if (!validatePassword(password)) return setError('Password is required')
     if (password !== rePassword) return setError('Passwords do not match')
 
     setLoading(true)
     try {
-      const res = await axios.post('/register', { email, password, role })
+      const res = await axios.post('/register', { email, password, role }, { withCredentials: true })
       if (res.status !== 201) {
         setError(res.data?.message || 'Registration failed')
         setLoading(false)
         return
       }
 
-      // server sets cookie; reload so App's auth-check redirects to dashboard
-      window.location.reload()
+      // After register, go to verify email flow (server holds verification; no email in URL)
+      navigate('/verify-email')
     } catch (err) {
       const msg = err?.response?.data?.message || 'Network error'
       setError(msg)
@@ -115,6 +112,9 @@ const Register = () => {
 
         <div className="flex justify-end">
           <Button type="submit" disabled={loading}>{loading ? 'Registering...' : 'Register'}</Button>
+        </div>
+        <div className="text-center mt-2 text-sm">
+          Already have an account? <Link to="/login" className="text-primary hover:underline">Login</Link>
         </div>
       </form>
     </div>
