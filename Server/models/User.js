@@ -2,7 +2,11 @@ import { Schema, model } from "mongoose";
 
 const UserSchema = new Schema(
   {
+<<<<<<< Updated upstream
     name: { type: String },
+=======
+    name: { type: String},
+>>>>>>> Stashed changes
 
     email: { type: String, required: true, unique: true },
 
@@ -11,7 +15,7 @@ const UserSchema = new Schema(
     // MERGED: Keeping all roles from both versions
     role: {
       type: String,
-      enum: ["Admin", "Manager", "Staff", "Inventory Managers", "Warehouse Staff"],
+      enum: ["Admin", "Manager", "Staff", "Inventory Manager"],
       required: true,
       default: "Staff"
     },

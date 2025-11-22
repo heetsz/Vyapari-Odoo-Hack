@@ -19,6 +19,10 @@ import Receipt from '@/pages/Receipt'
 import ReceiptDetail from '@/pages/ReceiptDetail'
 import Delivery from '@/pages/Delivery'
 import Adjustment from '@/pages/Adjustment'
+// SETTINGS PAGES
+import Suppliers from '@/pages/Suppliers'
+import Customers from '@/pages/Customers'
+import UnitsOfMeasure from '@/pages/UnitsOfMeasure'
 
 // AUTH ROUTING WRAPPER
 const AnimatedRoutes = ({ token }) => {
@@ -38,12 +42,18 @@ const AnimatedRoutes = ({ token }) => {
       <Route path="/dashboard" element={token ? <Layout><Dashboard /></Layout> : <Navigate to="/login" replace />} />
       <Route path="/profile" element={token ? <Layout><Profile /></Layout> : <Navigate to="/login" replace />} />
       <Route path="/products" element={token ? <Layout><ProductManager /></Layout> : <Navigate to="/login" replace />} />
+      <Route path="/stock" element={token ? <Layout><ProductManager /></Layout> : <Navigate to="/login" replace />} />
       
       {/* Operations pages */}
       <Route path="/operations/receipt" element={token ? <Layout><Receipt /></Layout> : <Navigate to="/login" replace />} />
       <Route path="/operations/receipt/:id" element={token ? <Layout><ReceiptDetail /></Layout> : <Navigate to="/login" replace />} />
       <Route path="/operations/delivery" element={token ? <Layout><Delivery /></Layout> : <Navigate to="/login" replace />} />
       <Route path="/operations/adjustment" element={token ? <Layout><Adjustment /></Layout> : <Navigate to="/login" replace />} />
+
+      {/* Settings pages */}
+      <Route path="/settings/suppliers" element={token ? <Layout><Suppliers /></Layout> : <Navigate to="/login" replace />} />
+      <Route path="/settings/customers" element={token ? <Layout><Customers /></Layout> : <Navigate to="/login" replace />} />
+      <Route path="/settings/units" element={token ? <Layout><UnitsOfMeasure /></Layout> : <Navigate to="/login" replace />} />
 
       {/* Wildcard */}
       <Route path="*" element={<Navigate to={token ? "/dashboard" : "/login"} replace />} />

@@ -9,6 +9,7 @@ import { connectDB } from './helpers/db.js';
 import productRoutes from "./routes/products.js";
 import categoryRoutes from "./routes/categories.js";
 import authRouter from './routes/auth.js';
+import apiRoutes from './routes/api.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET || "dev_secret"));
 app.use('/api', authRouter);              // auth routes
 app.use("/api/products", productRoutes);  // product routes
 app.use("/api/categories", categoryRoutes); // category routes
+app.use("/api", apiRoutes);               // inventory management routes
 
 // DB
 connectDB().catch((err) => {

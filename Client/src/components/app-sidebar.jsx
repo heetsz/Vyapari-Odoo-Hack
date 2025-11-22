@@ -7,7 +7,6 @@ import {
   IconTruck,
   IconFileInvoice,
   IconAdjustments,
-  IconHistory,
   IconClipboardList,
 } from "@tabler/icons-react"
 
@@ -58,14 +57,23 @@ const data = {
       icon: IconPackage,
     },
     {
-      title: "Move History",
-      url: "/move-history",
-      icon: IconHistory,
-    },
-    {
       title: "Settings",
-      url: "/settings",
+      url: "#",
       icon: IconSettings,
+      items: [
+        {
+          title: "Suppliers",
+          url: "/settings/suppliers",
+        },
+        {
+          title: "Customers",
+          url: "/settings/customers",
+        },
+        {
+          title: "Units of Measure",
+          url: "/settings/units",
+        },
+      ],
     },
   ],
 }
